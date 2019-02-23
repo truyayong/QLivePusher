@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context="com.story.demo.qlivepusher.CameraActivity">
     <com.story.demo.qlivepusher.camera.QCameraView
+        android:id="@+id/qcamera"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

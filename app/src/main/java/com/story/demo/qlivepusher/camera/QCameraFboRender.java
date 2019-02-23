@@ -62,7 +62,7 @@ public class QCameraFboRender {
 
     public void onCreate()
     {
-        String vertexSource = ShaderUtil.getRawResource(mContext, R.raw.vertex_shader);
+        String vertexSource = ShaderUtil.getRawResource(mContext, R.raw.vertex_shader_screen);
         String fragmentSource = ShaderUtil.getRawResource(mContext, R.raw.fragment_shader_screen);
 
         program = ShaderUtil.createProgram(vertexSource, fragmentSource);

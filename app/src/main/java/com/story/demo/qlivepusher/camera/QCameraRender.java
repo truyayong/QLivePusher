@@ -4,11 +4,13 @@ import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
+import android.opengl.Matrix;
 import android.util.Log;
 
 import com.story.demo.qlivepusher.R;
 import com.story.demo.qlivepusher.egl.EGLSurfaceView;
 import com.story.demo.qlivepusher.egl.ShaderUtil;
+import com.story.demo.qlivepusher.utils.DisplayUtil;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -48,6 +50,14 @@ public class QCameraRender implements EGLSurfaceView.QGLRender, SurfaceTexture.O
     private int fboTextureId;
     private int cameraTextureId;
 
+    private int uMatrix;
+    private float[] matrix = new float[16];
+
+    private int screenWidth;
+    private int screenHeight;
+    private int width;
+    private int height;
+
     private SurfaceTexture mSurfaceTexture;
 
     private OnSurfaceCreateListener mOnSurfaceCreateListener;
@@ -60,6 +70,8 @@ public class QCameraRender implements EGLSurfaceView.QGLRender, SurfaceTexture.O
 
     public QCameraRender(Context context) {
         this.mContext = context;
+        screenWidth = DisplayUtil.getScreenWidth(context);
+        screenHeight = DisplayUtil.getScreenHeight(context);
         mQCameraFboRender = new QCameraFboRender(mContext);
         vertexBuffer = ByteBuffer.allocateDirect(vertexData.length * 4)
                 .order(ByteOrder.nativeOrder())
@@ -74,6 +86,14 @@ public class QCameraRender implements EGLSurfaceView.QGLRender, SurfaceTexture.O
         fragmentBuffer.position(0);
     }
 
+    public void resetMatrix() {
+        Matrix.setIdentityM(matrix, 0);
+    }
+
+    public void setAngle(float angle, float x, float y, float z) {
+        Matrix.rotateM(matrix, 0, angle, x, y, z);
+    }
+
     @Override
     public void onSurfaceCreate() {
 
@@ -84,6 +104,7 @@ public class QCameraRender implements EGLSurfaceView.QGLRender, SurfaceTexture.O
         program = ShaderUtil.createProgram(vertexSource, fragmentSource);
         vPosition = GLES20.glGetAttribLocation(program, "v_Position");
         fPosition = GLES20.glGetAttribLocation(program, "f_Position");
+        uMatrix = GLES20.glGetUniformLocation(program, "u_Matrix");
 
         //vbo
         int[] vboIds = new int[1];
@@ -112,7 +133,7 @@ public class QCameraRender implements EGLSurfaceView.QGLRender, SurfaceTexture.O
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
 
-        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, 720, 1280
+        GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, screenWidth, screenHeight
                 , 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
         GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0
                 , GLES20.GL_TEXTURE_2D, fboTextureId, 0);
@@ -146,8 +167,10 @@ public class QCameraRender implements EGLSurfaceView.QGLRender, SurfaceTexture.O
 
     @Override
     public void onSurfaceChanged(int width, int height) {
-        mQCameraFboRender.onChange(width, height);
-        GLES20.glViewport(0, 0, width, height);
+//        mQCameraFboRender.onChange(width, height);
+//        GLES20.glViewport(0, 0, width, height);
+        this.width = width;
+        this.height = height;
     }
 
     @Override
@@ -157,6 +180,10 @@ public class QCameraRender implements EGLSurfaceView.QGLRender, SurfaceTexture.O
         GLES20.glClearColor(1f,0f, 0f, 1f);
 
         GLES20.glUseProgram(program);
+
+        GLES20.glViewport(0, 0, screenWidth, screenHeight);
+        GLES20.glUniformMatrix4fv(uMatrix, 1, false, matrix, 0);
+
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, fboId);
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vboId);
 
@@ -172,6 +199,7 @@ public class QCameraRender implements EGLSurfaceView.QGLRender, SurfaceTexture.O
         GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
 
         GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0);
+        mQCameraFboRender.onChange(width, height);
         mQCameraFboRender.onDraw(fboTextureId);
     }
 
