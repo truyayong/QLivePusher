@@ -88,4 +88,11 @@ public class QCameraView extends EGLSurfaceView {
                 break;
         }
     }
+
+    public int getTextureId() {
+        if (mRender == null) {
+            return -1;
+        }
+        return mRender.getTextureId();
+    }
 }

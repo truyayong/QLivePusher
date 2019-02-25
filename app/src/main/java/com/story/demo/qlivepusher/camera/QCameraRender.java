@@ -211,4 +211,8 @@ public class QCameraRender implements EGLSurfaceView.QGLRender, SurfaceTexture.O
     public interface OnSurfaceCreateListener {
         void onSurfaceCreate(SurfaceTexture surfaceTexture);
     }
+
+    public int getTextureId() {
+        return fboTextureId;
+    }
 }
