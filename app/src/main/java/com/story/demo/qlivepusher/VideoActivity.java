@@ -1,12 +1,15 @@
 package com.story.demo.qlivepusher;
 
+import android.media.MediaFormat;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import com.story.demo.qlivepusher.camera.QCameraView;
+import com.story.demo.qlivepusher.encodec.BaseMediaEncoder;
 import com.story.demo.qlivepusher.encodec.MediaEncoder;
 
 public class VideoActivity extends AppCompatActivity {
@@ -36,22 +39,22 @@ public class VideoActivity extends AppCompatActivity {
         Log.e(TAG, "trecord ");
         if (mMediaEncoder == null) {
             Log.e(TAG, "textureId is : " + mQCameraView.getTextureId());
-//            mMediaEncoder = new MediaEncoder(this, mQCameraView.getTextureId());
-//            mMediaEncoder.initEncodec(mQCameraView.getEglContext()
-//                    , Environment.getExternalStorageDirectory().getAbsolutePath() + "/wl_live_pusher.mp4"
-//                    , MediaFormat.MIMETYPE_VIDEO_AVC, 720, 1280);
-//            mMediaEncoder.setOnMediaInfoListener(new BaseMediaEncoder.OnMediaInfoListener() {
-//                @Override
-//                public void onMediaTime(int times) {
-//                    Log.e(TAG, "time is " + times);
-//                }
-//            });
-//            mMediaEncoder.startRecord();
+            mMediaEncoder = new MediaEncoder(this, mQCameraView.getTextureId());
+            mMediaEncoder.initEncodec(mQCameraView.getEglContext()
+                    , Environment.getExternalStorageDirectory().getAbsolutePath() + "/wl_live_pusher.mp4"
+                    , MediaFormat.MIMETYPE_VIDEO_AVC, 720, 1280);
+            mMediaEncoder.setOnMediaInfoListener(new BaseMediaEncoder.OnMediaInfoListener() {
+                @Override
+                public void onMediaTime(int times) {
+                    Log.e(TAG, "time is " + times);
+                }
+            });
+            mMediaEncoder.startRecord();
             mRecord.setText("正在录制");
         } else {
             Log.e(TAG, "record stop ");
-//            mMediaEncoder.stopRecord();
-//            mRecord.setText("开始录制");
+            mMediaEncoder.stopRecord();
+            mRecord.setText("开始录制");
             mMediaEncoder = null;
         }
     }

@@ -234,12 +234,11 @@ public abstract class BaseMediaEncoder {
                     } else {
                         throw  new RuntimeException("BaseMediaEncoder mRenderMode is wrong value");
                     }
-
-                    onCreate();
-                    onChange(reference.get().width, reference.get().height);
-                    onDraw();
-                    isStart = true;
                 }
+                onCreate();
+                onChange(reference.get().width, reference.get().height);
+                onDraw();
+                isStart = true;
             }
         }
 
