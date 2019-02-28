@@ -3,22 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
-    <Button
+    <com.story.demo.qlivepusher.imgvideo.ImgVideoView
+        android:id="@+id/imgvideoview"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:text="camera"
-        android:onClick="onPreview"/>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:text="视频编码录制"
-        android:onClick="videoRecord"/>
+        android:layout_height="500px" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:text="图片生成视频"
-        android:onClick="imgvideo"/>
+        android:onClick="start"
+        android:text="开始合成"/>
+
 </LinearLayout>

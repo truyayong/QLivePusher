@@ -34,4 +34,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, VideoActivity.class);
         startActivity(intent);
     }
+
+    public void imgvideo(View view) {
+        Intent intent = new Intent(this, ImageVideoActivity.class);
+        startActivity(intent);
+    }
 }

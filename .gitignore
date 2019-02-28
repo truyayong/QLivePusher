@@ -40,3 +40,6 @@ captures/
 *.exe
 *.out
 *.app
+
+#image
+*.jpeg
